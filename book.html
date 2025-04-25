@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Ebook Store</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .form-container {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+            width: 300px;
+        }
+
+        input,
+        select {
+            width: 90%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            display: block;
+            font-size: 16px;
+        }
+
+        button {
+            padding: 10px 15px;
+            font-size: 16px;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+            width: 100%;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* Dashboard Styling */
+        .dashboard {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .search-bar {
+            padding: 10px;
+            width: 50%;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        .menu {
+            position: relative;
+            display: inline-block;
+        }
+
+        .menu button {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .menu-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            background: white;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .menu-content a {
+            display: block;
+            padding: 10px;
+            text-decoration: none;
+            color: black;
+            background: white;
+            cursor: pointer;
+        }
+
+        .menu-content a:hover {
+            background: #f1f1f1;
+        }
+    </style>
+</head>
+<body class="bg-teal-500">
+    <!-- Initial Screen -->
+    <div class="flex items-center justify-center min-h-screen bg-white" id="initial-screen">
+        <div class="text-center">
+            <h1 class="text-teal-600 text-2xl font-semibold mb-4">eBook Management</h1>
+            <img alt="A stack of books with open pages" class="mx-auto mb-4" height="100" src="https://images.pexels.com/photos/159866/books-book-pages-read-literature-159866.jpeg?cs=srgb&amp;dl=pexels-pixabay-159866.jpg&amp;fm=jpg" width="150"/>
+            <button class="bg-teal-200 text-black font-semibold py-2 px-6 rounded" onclick="showLogin()">START</button>
+        </div>
+    </div>
+
+    <!-- Login Form -->
+    <div class="container hidden" id="login-container">
+        <h1 class="text-3xl font-bold text-center text-white mb-8">eBook Management</h1>
+        <div class="form-container">
+            <h2 class="text-xl font-semibold text-center text-teal-500 mb-6">Log In</h2>
+            <select class="mb-4" id="login-role">
+                <option value="user">User   </option>
+                <option value="vendor">vendor</option>
+            </select>
+            <input class="mb-4" id="login-email" placeholder="Email" required="" type="email"/>
+            <input class="mb-6" id="login-password" placeholder="Password" required="" type="password"/>
+            <button class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded" onclick="login()">Login</button>
+           <!-- <div class="text-center mt-4">
+                <a class="text-teal-500 hover:text-teal-800" href="#" onclick="showForgotPassword()">Forgot Password?</a>
+            </div> -->
+            <p class="mt-4">Don't have an account? <a class="text-teal-500 hover:text-teal-800" href="#" onclick="showSignup()">Sign up</a></p>
+        </div>
+    </div>
+
+    <!-- Signup Form -->
+
+    
+    <div class="container hidden" id="signup-container">
+        <h1 class="text-3xl font-bold text-center text-white mb-8">eBook Management</h1>
+        <div class="bg-white rounded-lg shadow-lg p-8 w-full max-w-md">
+            <h2 class="text-2xl font-bold text-center text-teal-600 mb-6">Sign Up</h2>
+            <form>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="signup-role">Role</label>
+                    <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="signup-role">
+                        <option value="user">User   </option>
+                        <option value="vendor">vendor</option>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="signup-email">Email</label>
+                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="signup-email" placeholder="Enter email..." type="email"/>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="signup-password">Password</label>
+                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="signup-password" placeholder="Enter password..." type="password"/>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="signup-repassword">Re-enter Password</label>
+                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="signup-repassword" placeholder="Re-enter password..." type="password"/>
+                </div>
+                <div class="mb-6">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="signup-phone">Phone Number</label>
+                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="signup-phone" placeholder="Enter phone number..." type="text"/>
+                </div>
+                
+                <div class="flex items-center justify-center">
+                    <button class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" onclick="signup()" type="button">SIGN UP!</button>
+                </div>
+            </form>
+            <p class="text-center text-gray-700 text-sm mt-6">Already have an account? <a class="text-teal-500 hover:text-teal-800" href="#" onclick="showLogin()">Login</a></p>
+        </div>
+    </div>
+
+    <!-- Forgot Password Form -->
+    <!--<div class="container hidden" id="forgot-password-container">
+        <h1 class="text-3xl font-bold text-center text-white mb-8">eBook Management</h1>
+        <div class="form-container">
+            <h2 class="text-xl font-semibold text-center text-teal-500 mb-6">Forgot Password</h2>
+            <input class="mb-4" id="forgot-password-email" placeholder="Enter your email" required="" type="email"/>
+            <button class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded" onclick="forgotPassword()">Submit</button>
+            <p class="mt-4"><a class="text-teal-500 hover:text-teal-800" href="#" onclick="showLogin()">Back to Login</a></p>
+        </div>
+    </div>-->
+
+    <!-- Dashboard -->
+    <div class="dashboard hidden" id="dashboard">
+        <input class="search-bar" placeholder="Search ebooks..." type="text"/>
+        <div class="menu">
+            <button onclick="toggleMenu()">⋮</button>
+            <div class="menu-content" id="menu-content">
+                <a href="#" onclick="changePassword()">Change Password</a>
+                <a href="#" onclick="logout()">Logout</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Home Page -->
+    <div class="flex hidden" id="home-page">
+        <!-- Sidebar -->
+        <div class="w-1/4 bg-white h-screen p-4">
+            <div class="text-xl font-bold mb-6">eService</div>
+            <ul>
+                <li class="mb-4">
+                    <a class="flex items-center text-gray-700 hover:text-black" href="#" onclick="fetchBooks()">
+                        <i class="fas fa-search mr-2"></i>
+                        Welcome to ebook management.
+                    </a>
+                </li>
+             
+                <li class="mb-4">
+                    <a class="flex items-center text-gray-700 hover:text-black" href="#" onclick="showPolicies()">
+                        <i class="fas fa-file-alt mr-2"></i>
+                        Policies
+                    </a>
+                </li>
+                <li class="mb-4">
+                    <a class="flex items-center text-gray-700 hover:text-black" href="#" onclick="showFeedback()">
+                        <i class="fas fa-comment-alt mr-2"></i>
+                        Feedback
+                    </a>
+                </li>
+                <li class="mb-4">
+                    <a class="flex items-center text-gray-700 hover:text-black" href="#" onclick="logout()">
+                        <i class="fas fa-comment-alt mr-2"></i>
+                        Logout
+                    </a>
+                </li>
+                
+            </ul>
+        </div>
+        <!-- Main Content -->
+        <div class="w-3/4 p-8">
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-2xl font-bold">Available Books</h1>
+                <div>
+                    <select id="category-select" class="border border-gray-300 rounded p-2" onchange="fetchBooks()">
+                        <option value="">All Categories</option>
+                        <option value="Engineering">Engineering</option>
+                        <option value="Science">Science</option>
+                        <option value="Poetry">Poetry</option>
+                        <!-- Add more categories as needed -->
+                    </select>
+                    <select id="sort-select" class="border border-gray-300 rounded p-2 ml-4" onchange="fetchBooks()">
+                        <option value="title">Sort by Title</option>
+                        <option value="author">Sort by Author</option>
+                    </select>
+                </div>
+            </div>
+            <div class="grid grid-cols-2 gap-4" id="books-list">
+                <!-- Books will be dynamically inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Policies Section -->
+    <div class="container hidden" id="policies-container">
+        <h1 class="text-3xl font-bold text-center text-white mb-8">Policies</h1>
+        <div class="form-container">
+            <p class="text-left mb-4">1. You can download the book, but cannot resell it.</p>
+            <p class="text-left mb-4">2. If you have found any errors in the book, please provide feedback.</p>
+            <p class="text-left mb-4">3. Only authors have the rights to resell their books. If you want to resell them, you must take prior permission from the respective author.</p>
+            <p class="text-left mb-4">4. Books downloaded cannot be uploaded on any other social media platforms like Instagram or Facebook.</p>
+            <button class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded" onclick="agreeToPolicies()">OK</button>
+        </div>
+    </div>
+
+    <!-- Feedback Form -->
+    <div class="container hidden" id="feedback-container">
+        <h1 class="text-3xl font-bold text-center text-white mb-8">Feedback</h1>
+        <div class="form-container">
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="feedback-subject">Subject</label>
+            <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="feedback-subject">
+                <option value="select one option">select one option</option>
+                <option value="error">Error in the Book</option>
+                <option value="complaint">Complaint</option>
+                <option value="improvement">Improvements</option>
+            </select>
+            <label class="block text-gray-700 text-sm font-bold mb-2 mt-4" for="feedback-detail">Explain in Detail (5 lines)</label>
+            <textarea class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="feedback-detail" rows="5" placeholder="Your feedback..."></textarea>
+            <button class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded mt-4" onclick="submitFeedback()">OK</button>
+        </div>
+    </div>
+
+    <script>
+        function showSignup() {
+            document.getElementById("login-container").classList.add("hidden");
+            document.getElementById("signup-container").classList.remove("hidden");
+            document.getElementById("forgot-password-container").classList.add("hidden");
+        }
+
+        function showLogin() {
+            document.getElementById("signup-container").classList.add("hidden");
+            document.getElementById("login-container").classList.remove("hidden");
+            document.getElementById("initial-screen").classList.add("hidden");
+            document.getElementById("forgot-password-container").classList.add("hidden");
+            document.getElementById("policies-container").classList.add("hidden");
+            document.getElementById("feedback-container").classList.add("hidden");
+        }
+        function logout() {
+            alert("Logging out...");
+            // Here you can also add any necessary logout logic, like clearing session data
+            document.getElementById("home-page").classList.add("hidden");
+            document.getElementById("dashboard").classList.add("hidden");
+            showLogin(); // Show the login page
+        }
+        function showForgotPassword() {
+            document.getElementById("login-container").classList.add("hidden");
+            document.getElementById("forgot-password-container").classList.remove("hidden");
+        }
+        function showPolicies() {
+            hideAllScreens();
+            document.getElementById("policies-container").classList.remove("hidden");
+        }
+
+        function showFeedback() {
+            hideAllScreens();
+            document.getElementById("feedback-container").classList.remove("hidden");
+        }
+
+        function hideAllScreens() {
+            document.getElementById("home-page").classList.add("hidden");
+            document.getElementById("policies-container").classList.add("hidden");
+            document.getElementById("feedback-container").classList.add("hidden");
+            document.getElementById("dashboard").classList.add("hidden");
+        }
+
+        function toggleMenu() {
+            let menu = document.getElementById("menu-content");
+            menu.style.display = menu.style.display === "block" ? "none" : "block";
+        }
+
+        async function signup() {
+            let role = document.getElementById("signup-role").value;
+            let email = document.getElementById("signup-email").value;
+            let password = document.getElementById("signup-password").value;
+            let repassword = document.getElementById("signup-repassword").value;
+            let phone = document.getElementById("signup-phone").value;
+
+            if (password !== repassword) {
+                alert("Passwords do not match.");
+                return;
+            }
+
+            let response = await fetch("http://localhost/book_store/signup.php", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email, password, role, phone })
+            });
+
+            let result = await response.json();
+            alert(result.message);
+            if (result.status === "success") {
+                alert("Signup successful! Now you can login.");
+                showLogin();
+            }
+        }
+
+        async function login() {
+            let role = document.getElementById("login-role").value;
+            let email = document.getElementById("login-email").value;
+            let password = document.getElementById("login-password").value;
+            if (role === "vendor") {
+                // Redirect to admin.html
+                window.location.href = "admin.html";
+                return; // Exit the function
+            }
+            let response = await fetch("http://localhost/book_store/login.php", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email, password, role })
+            });
+
+            let result = await response.json();
+            alert(result.message);
+
+            if (result.status === "success") {
+                document.getElementById("login-container").classList.add("hidden");
+                document.getElementById("dashboard").classList.remove("hidden");
+                showHomePage(); // Show home page after successful login
+                document.body.classList.remove("bg-teal-500");
+            }
+        }
+
+        async function fetchBooks() {
+            const category = document.getElementById('category-select').value;
+            const sortBy = document.getElementById('sort-select').value;
+            const response = await fetch(`http://localhost/book_store/sorted.php?category=${category}`);
+            const books = await response.json();
+
+            // Sort books based on the selected sorting option
+            if (sortBy === 'title') {
+                books.sort((a, b) => a.title.localeCompare(b.title));
+            } else if (sortBy === 'author') {
+                books.sort((a, b) => a.author.localeCompare(b.author));
+            }
+
+            const booksContainer = document.getElementById('books-list');
+            
+            if (booksContainer) {
+                booksContainer.innerHTML = ''; // Clear previous books
+
+                books.forEach(book => {
+                    const bookElement = document.createElement('div');
+                    bookElement.className = 'bg-white p-4 rounded shadow';
+                    bookElement.innerHTML = `
+                        <h2 class="text-lg font-bold">${book.title}</h2>
+                        <p class="text-gray-600">By ${book.author}</p>
+                        <img alt="Book cover of ${book.title}" class="mx-auto mb-4" height="150" src="${book.cover_image}"  width = "150"/>
+                        
+                        <button style="width:200px;" class="bg-green-500 text-white mt-2 px-4 py-2 rounded" onclick="previewPDF('${book.pdf_preview}')">PDF Preview</button>
+                        <button style="width:200px;" class="bg-yellow-500 text-white mt-2 px-4 py-2 rounded" onclick="buyNow('${book.title}', '${book.pdf_preview}')">Buy Now</button>
+                    `;
+                    booksContainer.appendChild(bookElement);
+                });
+            }
+        }
+
+        function previewPDF(pdfUrl) {
+            window.open(pdfUrl, '_blank'); // Open the PDF in a new tab
+        }
+
+        function buyNow(bookTitle, pdfUrl) {
+            const paymentMethod = prompt("Select payment method:\n1. Netbanking\n2. UPI\n\nEnter 1 or 2:");
+            if (paymentMethod === '1' || paymentMethod === '2') {
+                alert("Your payment is successful!");
+                window.open(pdfUrl, '_blank'); // Open the full PDF after payment
+            } else {
+                alert("Invalid selection. Please try again.");
+            }
+        }
+
+        function addToCart(bookId) {
+            fetch("http://localhost/book_store/add_to_cart.php", {
+            method: "POST",
+             headers: {
+            "Content-Type": "application/json"
+            },
+            credentials: "include", // Important: to send cookies/session
+            body: JSON.stringify({
+                book_id: bookId,
+               quantity: 1
+           })
+        })
+        .then(response => {
+            if (!response.ok) {
+               throw new Error("HTTP error " + response.status);
+           }
+        return response.json();
+        })
+        .then(data => {
+            if (data.status === "success") {
+                alert(data.message); // Book added or updated
+            } else {
+               alert("Error: " + data.message);
+            }
+        })
+        .catch(error => {
+             console.error("Fetch error:", error);
+            alert("Failed to connect to server. Is XAMPP running?");
+       });
+            alert(`Book with ID ${bookId} added to cart!`);
+        }
+
+        function showHomePage() {
+            document.getElementById("dashboard").classList.add("hidden");
+            document.getElementById("home-page").classList.remove("hidden");
+            fetchBooks(); // Fetch books when the home page is shown
+        }
+
+        async function forgotPassword() {
+            let email = document.getElementById("forgot-password-email").value;
+
+            let response = await fetch("http://localhost/book_store/forgot_password.php", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email })
+            });
+
+            let result = await response.json();
+            alert(result.message);
+            if (result.status === "success") showLogin();
+        }
+
+        function logout() {
+            alert("Logging out...");
+            location.reload();
+        }
+
+        function changePassword() {
+            alert("Change password functionality not implemented yet.");
+        }
+
+        function agreeToPolicies() {
+            alert("You have agreed to the policies.");
+            showHomePage(); // Return to the home page
+        }
+
+        function submitFeedback() {
+            const subject = document.getElementById("feedback-subject").value;
+            const detail = document.getElementById("feedback-detail").value;
+
+            if (detail.length < 5) {
+                alert("Please provide at least 5 lines of feedback.");
+                return;
+            }
+
+            // Simulate feedback submission
+            alert("Your feedback has been submitted successfully! We will go through it. Thank you!");
+            showHomePage(); // Return to the home page
+        }
+    </script>
+</body>
+</html>

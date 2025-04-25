@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vendor - Ebook Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+    <script>
+        function showManageBooks() {
+            const manageBooksDiv = document.getElementById('manage-books');
+            if (manageBooksDiv) {
+                manageBooksDiv.classList.remove('hidden');
+            }
+        }
+
+        function hideManageBooks() {
+            const manageBooksDiv = document.getElementById('manage-books');
+            if (manageBooksDiv) {
+                manageBooksDiv.classList.add('hidden');
+            }
+        }
+
+        function showAddBookForm() {
+            const addBookFormDiv = document.getElementById('add-book-form');
+            const showBooksDiv = document.getElementById('show-books');
+            if (addBookFormDiv && showBooksDiv) {
+                addBookFormDiv.classList.remove('hidden');
+                showBooksDiv.classList.add('hidden');
+            }
+        }
+
+        function showBooks() {
+            const addBookFormDiv = document.getElementById('add-book-form');
+            const showBooksDiv = document.getElementById('show-books');
+            if (addBookFormDiv && showBooksDiv) {
+                addBookFormDiv.classList.add('hidden');
+                showBooksDiv.classList.remove('hidden');
+                fetchBooks();
+            }
+        }
+
+        async function fetchBooks() {
+            const response = await fetch('http://localhost/book_store/books.php');
+            const books = await response.json();
+            const booksContainer = document.getElementById('books-list');
+            
+            if (booksContainer) {
+                booksContainer.innerHTML = ''; // Clear previous books
+
+                books.forEach(book => {
+                    const bookElement = document.createElement('div');
+                    bookElement.className = 'flex items-center justify-between border-b py-2';
+                    bookElement.innerHTML = `
+                        <div>
+                            <input type="checkbox" value="${book.id}" class="mr-2">
+                            ${book.title} by ${book.author} - $${book.price}
+                        </div>
+                        <button class="text-red-500" onclick="deleteBook(${book.id})">Delete</button>
+                    `;
+                    booksContainer.appendChild(bookElement);
+                });
+            }
+        }
+
+        async function deleteBook(id) {
+            const response = await fetch(`http://localhost/book_store/delete_book.php?id=${id}`, {
+                method: 'DELETE'
+            });
+            const result = await response.json();
+            alert(result.message || 'Book deleted successfully');
+            fetchBooks(); // Refresh the book list
+        }
+
+        async function addBook(event) {
+            event.preventDefault(); // Prevent form submission
+            const form = document.querySelector('#add-book-form form'); // Correctly select the form inside the div
+            const formData = new FormData(form);
+            
+            const response = await fetch('http://localhost/school_system/add_book.php', {
+                method: 'POST',
+                body: formData
+            });
+            const result = await response.json();
+            alert(result.message || 'Book saved successfully');
+            showBooks(); // Show the updated book list
+        }
+
+       
+
+        function logout() {
+            // Perform any logout logic here (e.g., clearing session, tokens, etc.)
+            // For example:
+            // localStorage.removeItem('userToken'); // If you're using local storage
+
+            // Redirect to book.html
+            window.location.href = 'book.html';
+        }
+    </script>
+</head>
+<body class="bg-gray-100">
+    <div class="flex">
+        <!-- Sidebar -->
+        <div class="w-1/4 bg-white h-screen p-4" onmouseleave="hideManageBooks()">
+            <div class="text-xl font-bold mb-6">eService</div>
+            <ul>
+                <li class="mb-4">
+                    <a class="flex items-center text-gray-700 hover:text-black" href="#" onclick="showBooks()">
+                        <i class="fas fa-search mr-2"></i>
+                        Show schools
+                    </a>
+                </li>
+                <li class="mb-4">
+                    <a class="flex items-center text-gray-700 hover:text-black" href="#" onclick="showAddBookForm()">
+                        <i class="fas fa-plus mr-2"></i>
+                        Add school
+                    </a>
+                </li>
+                
+                <li class="mb-4">
+                    <a class="flex items-center text-gray-700 hover:text-black" href="#" onclick="logout()">
+                        <i class="fas fa-sign-out-alt mr-2"></i>
+                        Logout
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <!-- Main Content -->
+        <div class="w-3/4 p-8">
+            <!-- Add Book Form -->
+            <div id="add-book-form" class="hidden">
+                <h1 class="text-2xl font-bold mb-4">Add Book</h1>
+                <form onsubmit="addBook(event)">
+                    <input type="text" name="school" placeholder="School" required class="border border-gray-300 rounded p-2 mb-4 w-full"/>
+                    <input type="text" name="category" placeholder="Category" required class="border border-gray-300 rounded p-2 mb-4 w-full"/>
+                    <input type="number" name="price" placeholder="Price" required class="border border-gray-300 rounded p-2 mb-4 w-full"/>
+                    <label class="block mb-2">Upload Cover Image:</label>
+                    <input type="file" name="cover_image" required class="border border-gray-300 rounded p-2 mb-4 w-full"/>
+                    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Add Book</button>
+                </form>
+            </div>
+            <!-- Show Books -->
+            <div id="show-books" class="hidden">
+                <h1 class="text-2xl font-bold mb-4">Available schools</h1>
+                <div id="books-list" class="mb-4"></div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
